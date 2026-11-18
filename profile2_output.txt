@@ -1,0 +1,203 @@
+﻿== A. DUPLICATE DETAILS ==
+rows involved in exact-duplicate groups: 101 | groups: 49
+income rate among duplicated rows: 0.119 vs overall 0.239
+conflicting-label groups:
+                                                                                                                                                                      nunique  size
+age workclass fnlwgt education education_num marital_status     occupation       relationship  race  sex    capital_gain capital_loss hours_per_week native_country               
+34  Private   169583 Masters   14            Never-married      Exec-managerial  Not-in-family White Female 0            0            50             United-States         2     2
+39  Private   138192 Bachelors 13            Married-civ-spouse Craft-repair     Husband       White Male   0            0            40             United-States         2     2
+41  Private   242804 HS-grad   9             Married-civ-spouse Transport-moving Husband       White Male   0            0            40             United-States         2     2
+46  Private   224559 HS-grad   9             Married-civ-spouse Transport-moving Husband       Black Male   0            0            40             United-States         2     2
+              235646 HS-grad   9             Married-civ-spouse Craft-repair     Husband       White Male   0            0            40             United-States         2     2
+
+== B. LOGICAL CONSISTENCY ==
+education -> education_num is 1-to-1: True | num of education_num values: 16 vs education levels: 16
+Husband & Female: 1 | Wife & Male: 3
+Married-civ-spouse but relationship not Husband/Wife: 367
+Husband/Wife but not married status: 0
+Never-worked / Without-pay with occupation known: 21 of 31
+Never-worked income>50K: 0 | Without-pay income>50K: 2
+age<=20 with education_num>=13 (bachelor+): 5 | age<=22 Doctorate/Prof-school: 0
+hours_per_week>=80 and age>=75: 2
+age==90 rows (top-coded?), income>50K rate: 0.236 | count age 85..89: 17
+
+== C. ROW ORDER / ORIGIN ==
+income>50K rate first 32,561 rows: 0.2408 | rest: 0.2362 | '?' in first/rest: 0.0737 0.075
+income>50K rate by 10 equal row blocks: [0.243, 0.233, 0.24, 0.239, 0.244, 0.242, 0.246, 0.233, 0.234, 0.238]
+
+== D. OUTLIERS (flagged, NOT removed) ==
+           col  IQR_low  IQR_high  pct_flagged  |z|>3     max  P(>50K | flagged)
+           age        0       216         0.44    186      90              0.176
+        fnlwgt        0      1453         2.97    506 1490400              0.212
+ education_num     1794         0         3.67    330      16              0.055
+  capital_gain        0      4035         8.26    331   99999              0.617
+  capital_loss        0      2282         4.67   2216    4356              0.501
+hours_per_week     8286      5210        27.63    681      99              0.202
+note: for capital_gain/loss IQR=0 so every non-zero is 'outlier'; use the non-zero subset instead:
+ capital_gain: n_nonzero=4035 median=7298 p95=99999 max=99999 P(>50K|nonzero)=0.617 (zero: 0.205)
+ capital_loss: n_nonzero=2282 median=1887 p95=2415 max=4356 P(>50K|nonzero)=0.501 (zero: 0.226)
+
+== E. MISSINGNESS PATTERN: is '?' random? ==
+ P(>50K | workclass=='?') = 0.095  vs known = 0.248   n_missing=2799
+ P(>50K | occupation=='?') = 0.094  vs known = 0.248   n_missing=2809
+ P(>50K | native_country=='?') = 0.257  vs known = 0.239   n_missing=857
+ mean age with ? / without: 39.8 38.5 | mean hours: 34.0 40.9
+ share age>=65 among workclass '?': 0.179 vs known: 0.034 | share age<=25: 0.383 vs 0.186
+ share <=HS among workclass '?': 0.515 vs known: 0.451
+ workclass '?' by sex % female: 0.454 vs known 0.324
+
+== F. RELATIONSHIP WITH TARGET ==
+point-biserial r (numeric vs y):
+age               0.230
+fnlwgt           -0.006
+education_num     0.333
+capital_gain      0.223
+capital_loss      0.148
+hours_per_week    0.228
+
+mean of each numeric by class:
+income             <=50K      >50K
+age                 36.9      44.3
+fnlwgt          190039.6  188470.6
+education_num        9.6      11.6
+capital_gain       147.0    4042.2
+capital_loss        54.2     193.5
+hours_per_week      38.8      45.5
+
+P(>50K) by sex:
+         mean   size
+sex                 
+Male    0.304  32650
+Female  0.109  16192
+
+P(>50K) by race:
+                     mean   size
+race                            
+Asian-Pac-Islander  0.269   1519
+White               0.254  41762
+Other               0.123    406
+Black               0.121   4685
+Amer-Indian-Eskimo  0.117    470
+
+P(>50K) by marital_status:
+                        mean   size
+marital_status                     
+Married-civ-spouse     0.446  22379
+Married-AF-spouse      0.378     37
+Divorced               0.101   6633
+Married-spouse-absent  0.092    628
+Widowed                0.084   1518
+Separated              0.065   1530
+Never-married          0.045  16117
+
+P(>50K) by relationship:
+                 mean   size
+relationship                
+Wife            0.469   2331
+Husband         0.449  19716
+Not-in-family   0.101  12583
+Unmarried       0.060   5125
+Other-relative  0.035   1506
+Own-child       0.015   7581
+
+P(>50K) by workclass:
+                   mean   size
+workclass                     
+Self-emp-inc      0.553   1695
+Federal-gov       0.392   1432
+Local-gov         0.296   3136
+Self-emp-not-inc  0.279   3862
+State-gov         0.268   1981
+Private           0.218  33906
+Without-pay       0.095     21
+?                 0.095   2799
+Never-worked      0.000     10
+
+P(>50K) by education:
+               mean   size
+education                 
+Prof-school   0.740    834
+Doctorate     0.726    594
+Masters       0.549   2657
+Bachelors     0.413   8025
+Assoc-acdm    0.258   1601
+Assoc-voc     0.253   2061
+Some-college  0.190  10878
+HS-grad       0.159  15784
+12th          0.073    657
+7th-8th       0.065    955
+10th          0.063   1389
+9th           0.054    756
+5th-6th       0.053    509
+11th          0.051   1812
+1st-4th       0.032    247
+Preschool     0.012     83
+
+P(>50K) by occupation:
+                    mean  size
+occupation                    
+Exec-managerial    0.478  6086
+Prof-specialty     0.451  6172
+Armed-Forces       0.333    15
+Protective-serv    0.313   983
+Tech-support       0.290  1446
+Sales              0.268  5504
+Craft-repair       0.226  6112
+Transport-moving   0.204  2355
+Adm-clerical       0.137  5611
+Machine-op-inspct  0.123  3022
+Farming-fishing    0.116  1490
+?                  0.094  2809
+Handlers-cleaners  0.067  2072
+Other-service      0.041  4923
+Priv-house-serv    0.012   242
+
+P(>50K) by hours bin:
+            mean   size
+hours_bin              
+(0, 20]    0.068   4453
+(20, 34]   0.071   3942
+(34, 40]   0.206  26095
+(40, 50]   0.395   8917
+(50, 60]   0.432   3759
+(60, 100]  0.357   1676
+
+P(>50K) by age bin:
+           mean   size
+age_bin               
+(16, 25]  0.018   9627
+(25, 35]  0.187  12719
+(35, 45]  0.346  11952
+(45, 55]  0.392   8296
+(55, 65]  0.314   4445
+(65, 91]  0.198   1803
+
+== G. REDUNDANCY / DEPENDENCE ==
+Cramer's V:
+                workclass  education  marital_status  occupation  relationship  race   sex  native_country  income
+workclass            1.00       0.10            0.09        0.40          0.10  0.06  0.15            0.04    0.18
+education            0.10       1.00            0.09        0.19          0.12  0.07  0.09            0.13    0.37
+marital_status       0.09       0.09            1.00        0.13          0.49  0.08  0.46            0.07    0.45
+occupation           0.40       0.19            0.13        1.00          0.18  0.08  0.42            0.07    0.35
+relationship         0.10       0.12            0.49        0.18          1.00  0.10  0.65            0.08    0.45
+race                 0.06       0.07            0.08        0.08          0.10  1.00  0.11            0.40    0.10
+sex                  0.15       0.09            0.46        0.42          0.65  0.11  1.00            0.06    0.21
+native_country       0.04       0.13            0.07        0.07          0.08  0.40  0.06            1.00    0.10
+income               0.18       0.37            0.45        0.35          0.45  0.10  0.21            0.10    1.00
+
+numeric correlation (Pearson):
+                 age  fnlwgt  education_num  capital_gain  capital_loss  hours_per_week
+age             1.00   -0.08           0.03          0.08          0.06            0.07
+fnlwgt         -0.08    1.00          -0.04         -0.00         -0.00           -0.01
+education_num   0.03   -0.04           1.00          0.13          0.08            0.14
+capital_gain    0.08   -0.00           0.13          1.00         -0.03            0.08
+capital_loss    0.06   -0.00           0.08         -0.03          1.00            0.05
+hours_per_week  0.07   -0.01           0.14          0.08          0.05            1.00
+Spearman age~education_num: 0.063 | capital_gain vs loss (Spearman): -0.066
+
+== H. SAMPLING WEIGHT fnlwgt ==
+corr(fnlwgt,y): -0.0063 | fnlwgt by race median: {'Amer-Indian-Eskimo': 101579.0, 'Asian-Pac-Islander': 139850.0, 'Black': 208266.0, 'Other': 188066.0, 'White': 177287.0}
+== I. REPRESENTATION / BIAS ==
+sex %: {'Male': 66.8, 'Female': 33.2} | race %: {'White': 85.5, 'Black': 9.6, 'Asian-Pac-Islander': 3.1, 'Amer-Indian-Eskimo': 1.0, 'Other': 0.8}
+US native %: 89.7 | native_country levels with <50 rows: 17
+minority cells (income>50K count): Female/Black/Amer-Indian/Other: {'Amer-Indian-Eskimo': 55, 'Asian-Pac-Islander': 409, 'Black': 566, 'Other': 50, 'White': 10607}

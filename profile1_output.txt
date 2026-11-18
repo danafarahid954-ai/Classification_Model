@@ -1,0 +1,243 @@
+﻿== 1. SHAPE / DTYPES ==
+(48842, 15)
+age               int64
+workclass           str
+fnlwgt            int64
+education           str
+education_num     int64
+marital_status      str
+occupation          str
+relationship        str
+race                str
+sex                 str
+capital_gain      int64
+capital_loss      int64
+hours_per_week    int64
+native_country      str
+income              str
+
+== 2. TRUE NaN per column (pandas default) ==
+age               0
+workclass         0
+fnlwgt            0
+education         0
+education_num     0
+marital_status    0
+occupation        0
+relationship      0
+race              0
+sex               0
+capital_gain      0
+capital_loss      0
+hours_per_week    0
+native_country    0
+income            0
+
+categorical: ['workclass', 'education', 'marital_status', 'occupation', 'relationship', 'race', 'sex', 'native_country', 'income']
+numeric: ['age', 'fnlwgt', 'education_num', 'capital_gain', 'capital_loss', 'hours_per_week']
+
+== 3. HIDDEN MISSING: '?' count per column ==
+                   n   pct
+workclass       2799  5.73
+occupation      2809  5.75
+native_country   857  1.75
+
+any column with leading/trailing whitespace in values?
+(none printed above = no whitespace problems)
+
+rows with >=1 '?': 3620 (7.41%)
+rows with '?' in workclass AND occupation: 2799
+workclass '?' but occupation known: 0
+occupation '?' but workclass known: 10
+
+== 4. TARGET ==
+income
+<=50K    37155
+>50K     11687
+Name: count, dtype: int64
+income
+<=50K    76.07
+>50K     23.93
+Name: proportion, dtype: float64
+
+== 5. DUPLICATES ==
+exact duplicate rows (beyond first): 52 (0.11%)
+feature-identical groups with CONFLICTING labels: 5
+duplicated fnlwgt values: 20319
+
+== 6. NUMERIC SUMMARY ==
+                  count       mean        std      min       1%        5%       25%       50%       75%        95%        99%        max
+age             48842.0      38.64      13.71     17.0     17.0     19.00      28.0      37.0      48.0      63.00      74.00       90.0
+fnlwgt          48842.0  189664.13  105604.03  12285.0  27166.0  39615.40  117550.5  178144.5  237642.0  379481.65  509484.42  1490400.0
+education_num   48842.0      10.08       2.57      1.0      3.0      5.00       9.0      10.0      12.0      14.00      16.00       16.0
+capital_gain    48842.0    1079.07    7452.02      0.0      0.0      0.00       0.0       0.0       0.0    5013.00   15024.00    99999.0
+capital_loss    48842.0      87.50     403.00      0.0      0.0      0.00       0.0       0.0       0.0       0.00    2001.00     4356.0
+hours_per_week  48842.0      40.42      12.39      1.0      8.0     17.05      40.0      40.0      45.0      60.00      80.00       99.0
+
+skewness:
+age                0.56
+fnlwgt             1.44
+education_num     -0.32
+capital_gain      11.89
+capital_loss       4.57
+hours_per_week     0.24
+
+fraction exactly 0:
+age               0.0000
+fnlwgt            0.0000
+education_num     0.0000
+capital_gain      0.9174
+capital_loss      0.9533
+hours_per_week    0.0000
+
+top values of capital_gain:
+capital_gain
+0        44807
+15024      513
+7688       410
+7298       364
+99999      244
+3103       152
+
+top values of capital_loss:
+capital_loss
+0       46560
+1902      304
+1977      253
+1887      233
+2415       72
+1485       71
+
+top values of hours_per_week:
+hours_per_week
+40    22803
+50     4246
+45     2717
+60     2177
+35     1937
+20     1862
+
+top values of age:
+age
+36    1348
+35    1337
+33    1335
+23    1329
+31    1325
+34    1303
+
+capital_gain==99999: 244 | income >50K among them: 1.0
+rows with BOTH gain>0 and loss>0: 0
+hours_per_week ==99: 137 | <=5: 318 | >=80: 528
+age min/max: 17 90 | age>=90: 55 | age==90: 55
+
+== 7. CATEGORICAL LEVELS ==
+
+workclass: 9 levels; rare(<1%): 2
+workclass
+Private             33906
+Self-emp-not-inc     3862
+Local-gov            3136
+?                    2799
+State-gov            1981
+Self-emp-inc         1695
+Federal-gov          1432
+Without-pay            21
+Never-worked           10
+
+education: 16 levels; rare(<1%): 2
+education
+HS-grad         15784
+Some-college    10878
+Bachelors        8025
+Masters          2657
+Assoc-voc        2061
+11th             1812
+Assoc-acdm       1601
+10th             1389
+7th-8th           955
+Prof-school       834
+9th               756
+12th              657
+Doctorate         594
+5th-6th           509
+1st-4th           247
+Preschool          83
+
+marital_status: 7 levels; rare(<1%): 1
+marital_status
+Married-civ-spouse       22379
+Never-married            16117
+Divorced                  6633
+Separated                 1530
+Widowed                   1518
+Married-spouse-absent      628
+Married-AF-spouse           37
+
+occupation: 15 levels; rare(<1%): 2
+occupation
+Prof-specialty       6172
+Craft-repair         6112
+Exec-managerial      6086
+Adm-clerical         5611
+Sales                5504
+Other-service        4923
+Machine-op-inspct    3022
+?                    2809
+Transport-moving     2355
+Handlers-cleaners    2072
+Farming-fishing      1490
+Tech-support         1446
+Protective-serv       983
+Priv-house-serv       242
+Armed-Forces           15
+
+relationship: 6 levels; rare(<1%): 0
+relationship
+Husband           19716
+Not-in-family     12583
+Own-child          7581
+Unmarried          5125
+Wife               2331
+Other-relative     1506
+
+race: 5 levels; rare(<1%): 2
+race
+White                 41762
+Black                  4685
+Asian-Pac-Islander     1519
+Amer-Indian-Eskimo      470
+Other                   406
+
+sex: 2 levels; rare(<1%): 0
+sex
+Male      32650
+Female    16192
+
+native_country: 42 levels; rare(<1%): 39
+native_country
+United-States         43832
+Mexico                  951
+?                       857
+Philippines             295
+Germany                 206
+Puerto-Rico             184
+Canada                  182
+El-Salvador             155
+India                   151
+Cuba                    138
+England                 127
+China                   122
+South                   115
+Jamaica                 106
+Italy                   105
+Dominican-Republic      103
+Japan                    92
+Guatemala                88
+Poland                   87
+Vietnam                  86
+
+income: 2 levels; rare(<1%): 0
+income
+<=50K    37155
+>50K     11687

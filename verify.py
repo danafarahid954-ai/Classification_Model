@@ -1,0 +1,18 @@
+# Independent re-check with the stdlib csv module (no pandas) of the headline numbers.
+import csv, sys, collections
+rows = list(csv.reader(open(sys.argv[1], newline="")))
+print("rows:", len(rows), "| distinct row lengths:", {len(r) for r in rows})
+inc = collections.Counter(r[14] for r in rows); print("income:", dict(inc), "| >50K pct:", round(100*inc[">50K"]/len(rows),2))
+for i,n in [(1,"workclass"),(6,"occupation"),(13,"native_country")]: print("'?' in", n, sum(r[i]=="?" for r in rows))
+print("any '?' anywhere:", sum("?" in r for r in rows))
+print("exact duplicate rows beyond first:", len(rows)-len({tuple(r) for r in rows}))
+cg = collections.Counter(int(r[10]) for r in rows)
+print("capital_gain==99999:", cg[99999], "| values >=90000:", sorted((k,v) for k,v in cg.items() if k>=90000), "| zeros:", cg[0])
+print("capital_gain 3rd..: top 8 nonzero:", [(k,v) for k,v in cg.most_common(9) if k!=0][:8])
+print("income among capital_gain==99999:", collections.Counter(r[14] for r in rows if r[10]=="99999"))
+hp = collections.Counter(int(r[12]) for r in rows); print("hours 95..99 counts:", {h:hp[h] for h in range(90,100)}, "| hours==40:", hp[40], "| ==1:", hp[1])
+ag = collections.Counter(int(r[0]) for r in rows); print("age 84..90 counts:", {a:ag[a] for a in range(84,91)}, "| min age:", min(ag))
+fw = sorted(int(r[2]) for r in rows); print("fnlwgt top5:", fw[-5:], "| p99:", fw[int(.99*len(fw))])
+print("education_num range:", min(int(r[4]) for r in rows), max(int(r[4]) for r in rows))
+print("race levels:", sorted({r[8] for r in rows}))
+print("income levels (check for trailing dots):", sorted({r[14] for r in rows}))

@@ -1,0 +1,9 @@
+{
+  "model": "Histogram gradient boosting",
+  "threshold": 0.37,
+  "sklearn_version": "1.9.1",
+  "train_rows": 39032,
+  "data_version": "v2_dedup",
+  "trained": "2026-11-15T01:55:43",
+  "note": "Input: raw feature rows as in data/adult.csv (the pipeline includes preprocessing). Predict the >50K probability with predict_proba(...)[:, 1] and compare with the threshold."
+}
